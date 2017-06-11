@@ -8,11 +8,14 @@ import {
   TableRowColumn
 } from 'material-ui/Table'
 import Message from 'material-ui/svg-icons/communication/mail-outline'
+import Pencil from 'material-ui/svg-icons/content/create'
+import Add from 'material-ui/svg-icons/content/add'
 import Drawer from 'material-ui/Drawer'
 import AppBar from 'material-ui/AppBar'
 import { List, ListItem } from 'material-ui/List'
 import Divider from 'material-ui/Divider'
 import Avatar from 'material-ui/Avatar'
+import IconButton from 'material-ui/IconButton'
 
 const plan = [
   {name: 'January',
@@ -30,9 +33,11 @@ const plan = [
   }
 ]
 
-const icon = <Message />
+const message = <Message />
+const edit = <Pencil />
+//const add = <Add />
 
-export default class Calendar extends Component {
+export default class EditCalendar extends Component {
   render() {
     return (
       <div>
@@ -45,33 +50,42 @@ export default class Calendar extends Component {
               <TableHeaderColumn>Workout #3</TableHeaderColumn>
               <TableHeaderColumn>Open Water Swims</TableHeaderColumn>
               <TableHeaderColumn>Notes</TableHeaderColumn>
+              <TableHeaderColumn></TableHeaderColumn>
             </TableRow>
           </TableHeader>
         </Table>
         {plan.map((month, monthidx) =>
         <Table>
           <TableHeader displaySelectAll={false} >
-            <TableRow key={monthidx}>
+            <TableRow>
               <TableHeaderColumn colSpan="3">
-                {`${month.name} -- Goal: ${month.goal}`}
+                {`${month.name} -- Goal: ${month.goal} `}
+                {edit}
               </TableHeaderColumn>
             </TableRow>
           </TableHeader>
           <TableBody>
             {month.weeks.map((week, weekidx) =>
-              <TableRow key={weekidx}>
+              <TableRow>
                 <TableRowColumn>{week.date}</TableRowColumn>
                 <TableRowColumn>{week.workout1}</TableRowColumn>
                 <TableRowColumn>{week.workout2}</TableRowColumn>
                 <TableRowColumn>{week.workout3}</TableRowColumn>
                 <TableRowColumn>{week.ows}</TableRowColumn>
-                <TableRowColumn>{icon}</TableRowColumn>
+                <TableRowColumn>{message}</TableRowColumn>
+                <TableRowColumn>{edit}</TableRowColumn>
               </TableRow>
             )}
           </TableBody>
+            <IconButton>
+              <Add />
+            </IconButton>
         </Table>
         )}
-        <Drawer width={300} openSecondary={true} open={true} >
+        <IconButton>
+          <Add />
+        </IconButton>
+        <Drawer width={300} openSecondary={true} open={false} >
           <AppBar title="Messages" showMenuIconButton={false} />
           <List>
             <ListItem
