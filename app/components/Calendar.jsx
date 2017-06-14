@@ -14,6 +14,8 @@ import { List, ListItem } from 'material-ui/List'
 import Divider from 'material-ui/Divider'
 import Avatar from 'material-ui/Avatar'
 
+import { Messages } from './Messages'
+
 const plan = [
   {name: 'January',
     goal: 'Get faster',
@@ -71,17 +73,7 @@ export default class Calendar extends Component {
           </TableBody>
         </Table>
         )}
-        <Drawer width={300} openSecondary={true} open={true} >
-          <AppBar title="Messages" showMenuIconButton={false} />
-          <List>
-            <ListItem
-              leftAvatar={<Avatar>A</Avatar>}
-              secondaryText={'This is a test'}
-              secondaryTextLines={2}
-            />
-            <Divider inset={true} />
-          </List>
-        </Drawer>
+        <Messages />
       </div>
     )
   }
