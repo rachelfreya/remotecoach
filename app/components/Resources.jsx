@@ -1,14 +1,20 @@
 import React, { Component } from 'react'
-import {GridList, GridTile} from 'material-ui/GridList'
 
-export default class Drills extends Component {
+const resources = [{name: 'Freestyle', url: 'http://www.usms.org/articles/articledisplay.php?aid=1929'}, {name: 'Backstroke', url: 'http://www.swimsmooth.com/kick.html'}]
+
+export default class Resources extends Component {
   render() {
     return (
-      <GridList>
-        <GridTile title='catchup'>
-          <img src={'https://i.ytimg.com/vi/dVIQ99Ywcck/maxresdefault.jpg'} />
-        </GridTile>
-      </GridList>
+      <div>
+        <h1>Resources</h1>
+          <ul>
+            {resources.map(resource =>
+            <li>
+              <a href={resource.url} target="_blank" >{resource.name}</a>
+            </li>
+            )}
+          </ul>
+      </div>
     )
   }
 }
