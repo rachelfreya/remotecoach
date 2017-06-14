@@ -16,6 +16,9 @@ import Workouts from './components/Workouts'
 import Workout from './components/Workout'
 import Drills from './components/Drills'
 import Resources from './components/Resources'
+import EditResources from './components/EditResources'
+import EditWorkout from './components/EditWorkout'
+import EditWorkouts from './components/EditWorkouts'
 import Login from './components/Login'
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
@@ -31,6 +34,9 @@ render(
           <Route path='/drills' component={Drills} />
           <Route path='/resources' component={Resources} />
           <Route path='/editcalendar' component={EditCalendar} />
+          <Route path='/editresources' component={EditResources} />
+          <Route path='/editworkout' component={EditWorkout} />
+          <Route path='/editworkouts' component={EditWorkouts} />
         </Route>
       </Router>
     </Provider>
