@@ -9,8 +9,8 @@ module.exports = require('express').Router()
       .then(weeks => res.json(weeks))
       .catch(next))
   .post('/', (req, res, next) =>
-      Week.create(req.body)
-      .then(week => res.status(201).json(week))
+      Week.bulkCreate(req.body)
+      .then(weeks => res.status(201).json(weeks))
       .catch(next))
   .put('/:id', (req, res, next) =>
       Week.findById(req.params.id)

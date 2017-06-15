@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import {
   Table,
   TableBody,
@@ -21,26 +23,21 @@ import DatePicker from 'material-ui/DatePicker'
 
 import { Messages } from './Messages'
 import { convertMonth } from '../utils'
+import { setWeeks } from '../reducers/weeks'
+import { setGoal } from '../reducers/goals'
 
 const coach = true
 
-const edit = <Pencil />
+// const goals = [{month: 'June', goal: 'Get faster'}, {month: 'July', goal: 'Get stronger'}]
 
-const goals = [{name: 'January', goal: 'Get faster'}, {name: 'February', goal: 'Get stronger'}]
-
-// const weeks = [
-//   {date: 'January 1', workout1: 30, workout2: 60, workout3: 90, ows: 'None'},
-//   {date: 'January 8', workout1: 60, workout2: 90, workout3: 30, ows: 'SCAR'},
-//   {date: 'February 1', workout1: 'None', workout2: 'None', workout3: 'None', ows: 'None'}
-// ]
-
-const weeks = false
-
-export default class Calendar extends Component {
+class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      dialog: false,
+      week: false,
+      goalDialog: false,
+      month: '',
+      goal: '',
       workout1: null,
       workout2: null,
       workout3: null,
@@ -52,10 +49,10 @@ export default class Calendar extends Component {
 
   selectEndDate = (e, date) => {
     this.setState({ endDate: date })
-    this.setWeeks()
+    this.saveWeeks()
   }
 
-  setWeeks = () => {
+  saveWeeks = () => {
     let startDate = this.state.startDate, endDate = this.state.endDate
     startDate.setDate(startDate.getDate() - startDate.getDay())
     endDate.setDate(endDate.getDate() - endDate.getDay())
@@ -63,18 +60,41 @@ export default class Calendar extends Component {
     for (let week = startDate; week <= endDate; week.setDate(week.getDate() + 7)) {
       weeks.push({'date': `${convertMonth(week.getMonth())} ${week.getDate()}`})
     }
+    this.props.setWeeks(weeks)
   }
   openWeekEditor = (weekidx) => {
     weekidx >= 0 ? this.setState({dialog: true, workout1: weeks[weekidx].workout1, workout2: weeks[weekidx].workout2, workout3: weeks[weekidx].workout3}) : this.setState({dialog: true, workout1: 60, workout2: 60, workout3: 60})
   }
-  closeWeekEditor = () => { this.setState({dialog: false}) }
-  openMessages = () => { this.setState({messages: true}) }
-  closeMessages = () => { this.setState({messages: false}) }
+
+  closeWeekEditor = () => this.setState({ weeks: false })
+
+  openGoalEditor = month => {
+    this.setState({ goalDialog: true, month: month })
+  }
+
+  closeGoalEditor = () => this.setState({ goalDialog: false })
+
+  saveGoal = () => {
+    this.closeGoalEditor()
+    const goal = {month: this.state.month, goal: this.state.goal}
+    this.props.setGoal(goal)
+  }
+
+  findGoal = (month) => {
+    return this.props.goals.find(goal => goal.month === month)
+  }
+
   workout1Change = (event, index, value) => this.setState({workout1: value})
+
   workout2Change = (event, index, value) => this.setState({workout2: value})
+
   workout3Change = (event, index, value) => this.setState({workout3: value})
+
   render() {
-    const actions = [
+    const weeks = this.props.weeks
+    const uniqueMonths = new Set(weeks.map(week => week.date.split(' ')[0]))
+    const months = Array.from(uniqueMonths)
+    const weekActions = [
       <FlatButton
         label="Cancel"
         primary={true}
@@ -86,8 +106,20 @@ export default class Calendar extends Component {
         onTouchTap={this.closeWeekEditor}
       />
     ]
+    const goalActions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.closeGoalEditor}
+      />,
+      <FlatButton
+        label="Save"
+        primary={true}
+        onTouchTap={this.saveGoal}
+      />
+    ]
     if (coach) {
-      if (weeks) {
+      if (weeks.length) {
         return (
           <div>
             <Table>
@@ -103,18 +135,18 @@ export default class Calendar extends Component {
                 </TableRow>
               </TableHeader>
             </Table>
-            {goals.map((month, monthidx) =>
+            {months.map(month =>
             <Table>
               <TableHeader displaySelectAll={false} >
                 <TableRow>
                   <TableHeaderColumn colSpan="3">
-                    {`${month.name} -- Goal: ${month.goal} `}
-                    {edit}
+                    {`${month} -- Goal: ${this.findGoal(month) ? this.findGoal(month).goal : ''}`}
+                    <IconButton onTouchTap={() => this.openGoalEditor(month)} ><Pencil /></IconButton>
                   </TableHeaderColumn>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {weeks.filter(week => week.date.startsWith(month.name)).map((week, weekidx) =>
+                {weeks.filter(week => week.date.startsWith(month)).map((week, weekidx) =>
                   <TableRow>
                     <TableRowColumn>{week.date}</TableRowColumn>
                     <TableRowColumn>{isNaN(week.workout1) ? week.workout1 : `${week.workout1} minutes`}</TableRowColumn>
@@ -139,10 +171,22 @@ export default class Calendar extends Component {
             </IconButton>
             <Messages />
             <Dialog
-              title='Week of March 1'
-              actions={actions}
+              title={this.state.month}
+              actions={goalActions}
               modal={true}
-              open={this.state.dialog}
+              open={this.state.goalDialog}
+            >
+              <TextField
+                floatingLabelText='Goal'
+                defaultValue={this.findGoal(this.state.month) ? this.findGoal(this.state.month).goal : ''}
+                onChange={e => this.setState({ goal: e.target.value })}
+              />
+            </Dialog>
+            <Dialog
+              title='Week of March 1'
+              actions={weekActions}
+              modal={true}
+              open={this.state.week}
             >
               <SelectField
                 floatingLabelText="Workout #1"
@@ -244,6 +288,10 @@ export default class Calendar extends Component {
           <Messages />
         </div>
       )
-  }
+    }
   }
 }
+
+const mapState = ({ weeks, goals }) => ({ weeks, goals })
+
+export default connect(mapState, { setWeeks, setGoal })(Calendar)
