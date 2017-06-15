@@ -13,7 +13,7 @@ import IconButton from 'material-ui/IconButton'
 const messages = [{user: 'Abby', text: 'hello'}, {user: 'Barbara', text: 'hi'}]
 
 export const Messages = () => (
-  <Drawer width={300} openSecondary={true} open={true} >
+  <Drawer width={300} openSecondary={true} open={false} >
     <AppBar title="Messages" iconElementLeft={<IconButton><NavigationClose /></IconButton>} />
     <List>
       {messages.map(message =>
