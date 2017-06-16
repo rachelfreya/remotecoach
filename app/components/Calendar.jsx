@@ -23,24 +23,25 @@ import DatePicker from 'material-ui/DatePicker'
 
 import { Messages } from './Messages'
 import { convertMonth } from '../utils'
-import { setWeeks } from '../reducers/weeks'
+import { setWeeks, updateWeek, deleteWeek, addWeek } from '../reducers/weeks'
 import { setGoal } from '../reducers/goals'
 
 const coach = true
-
-// const goals = [{month: 'June', goal: 'Get faster'}, {month: 'July', goal: 'Get stronger'}]
 
 class Calendar extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      week: false,
+      weekDialog: false,
       goalDialog: false,
       month: '',
       goal: '',
-      workout1: null,
-      workout2: null,
-      workout3: null,
+      week: '',
+      workout1: '',
+      workout2: '',
+      workout3: '',
+      ows: '',
+      weekId: null,
       startDate: null,
       endDate: null
     }
@@ -56,17 +57,17 @@ class Calendar extends Component {
     let startDate = this.state.startDate, endDate = this.state.endDate
     startDate.setDate(startDate.getDate() - startDate.getDay())
     endDate.setDate(endDate.getDate() - endDate.getDay())
-    const weeks = []
+    const weeksArr = []
     for (let week = startDate; week <= endDate; week.setDate(week.getDate() + 7)) {
-      weeks.push({'date': `${convertMonth(week.getMonth())} ${week.getDate()}`})
+      weeksArr.push({'date': `${convertMonth(week.getMonth())} ${week.getDate()}`})
     }
-    this.props.setWeeks(weeks)
+    this.props.setWeeks(weeksArr)
   }
-  openWeekEditor = (weekidx) => {
-    weekidx >= 0 ? this.setState({dialog: true, workout1: weeks[weekidx].workout1, workout2: weeks[weekidx].workout2, workout3: weeks[weekidx].workout3}) : this.setState({dialog: true, workout1: 60, workout2: 60, workout3: 60})
+  openWeekEditor = (week) => {
+    this.setState({ weekDialog: true, week: week.date, workout1: week.workout1, workout2: week.workout2, workout3: week.workout3, ows: week.ows, weekId: week.id })
   }
 
-  closeWeekEditor = () => this.setState({ weeks: false })
+  closeWeekEditor = () => this.setState({ weekDialog: false })
 
   openGoalEditor = month => {
     this.setState({ goalDialog: true, month: month })
@@ -81,7 +82,7 @@ class Calendar extends Component {
   }
 
   findGoal = (month) => {
-    return this.props.goals.find(goal => goal.month === month)
+    this.props.goals.find(goal => goal.month === month)
   }
 
   workout1Change = (event, index, value) => this.setState({workout1: value})
@@ -90,10 +91,22 @@ class Calendar extends Component {
 
   workout3Change = (event, index, value) => this.setState({workout3: value})
 
+  owsChange = e => this.setState({ ows: e.target.value })
+
+  saveWorkout = () => {
+    this.closeWeekEditor()
+    this.props.updateWeek(this.state.weekId, {workout1: this.state.workout1, workout2: this.state.workout2, workout3: this.state.workout3, ows: this.state.ows})
+  }
+
+  newWeek = () => {
+    let nextWeek = new Date(`${this.props.weeks[this.props.weeks.length-1].date}, 2017 00:00:00`)
+    nextWeek.setDate(nextWeek.getDate() + 7)
+    this.props.addWeek({'date': `${convertMonth(nextWeek.getMonth())} ${nextWeek.getDate()}`})
+  }
+
   render() {
     const weeks = this.props.weeks
-    const uniqueMonths = new Set(weeks.map(week => week.date.split(' ')[0]))
-    const months = Array.from(uniqueMonths)
+    const months = Array.from(new Set(weeks.map(week => week.date.split(' ')[0])))
     const weekActions = [
       <FlatButton
         label="Cancel"
@@ -103,7 +116,7 @@ class Calendar extends Component {
       <FlatButton
         label="Save"
         primary={true}
-        onTouchTap={this.closeWeekEditor}
+        onTouchTap={this.saveWorkout}
       />
     ]
     const goalActions = [
@@ -118,140 +131,11 @@ class Calendar extends Component {
         onTouchTap={this.saveGoal}
       />
     ]
-    if (coach) {
-      if (weeks.length) {
-        return (
-          <div>
-            <Table>
-              <TableHeader displaySelectAll={false} >
-                <TableRow>
-                  <TableHeaderColumn>Week</TableHeaderColumn>
-                  <TableHeaderColumn>Workout #1</TableHeaderColumn>
-                  <TableHeaderColumn>Workout #2</TableHeaderColumn>
-                  <TableHeaderColumn>Workout #3</TableHeaderColumn>
-                  <TableHeaderColumn>Open Water Swims</TableHeaderColumn>
-                  <TableHeaderColumn>Notes</TableHeaderColumn>
-                  <TableHeaderColumn></TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-            </Table>
-            {months.map(month =>
-            <Table>
-              <TableHeader displaySelectAll={false} >
-                <TableRow>
-                  <TableHeaderColumn colSpan="3">
-                    {`${month} -- Goal: ${this.findGoal(month) ? this.findGoal(month).goal : ''}`}
-                    <IconButton onTouchTap={() => this.openGoalEditor(month)} ><Pencil /></IconButton>
-                  </TableHeaderColumn>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {weeks.filter(week => week.date.startsWith(month)).map((week, weekidx) =>
-                  <TableRow>
-                    <TableRowColumn>{week.date}</TableRowColumn>
-                    <TableRowColumn>{isNaN(week.workout1) ? week.workout1 : `${week.workout1} minutes`}</TableRowColumn>
-                    <TableRowColumn>{isNaN(week.workout2) ? week.workout2 : `${week.workout2} minutes`}</TableRowColumn>
-                    <TableRowColumn>{isNaN(week.workout3) ? week.workout3 : `${week.workout3} minutes`}</TableRowColumn>
-                    <TableRowColumn>{week.ows}</TableRowColumn>
-                    <TableRowColumn><IconButton onTouchTap={this.openMessages} ><Message /></IconButton></TableRowColumn>
-                    <TableRowColumn>
-                      <IconButton onTouchTap={() => this.openWeekEditor(weekidx)} ><Pencil /></IconButton>
-                      <IconButton><Trash /></IconButton>
-                    </TableRowColumn>
-                  </TableRow>
-                )}
-              </TableBody>
-                <IconButton>
-                  <Add />
-                </IconButton>
-            </Table>
-            )}
-            <IconButton onTouchTap={() => this.openWeekEditor(-1)} >
-              <Add />
-            </IconButton>
-            <Messages />
-            <Dialog
-              title={this.state.month}
-              actions={goalActions}
-              modal={true}
-              open={this.state.goalDialog}
-            >
-              <TextField
-                floatingLabelText='Goal'
-                defaultValue={this.findGoal(this.state.month) ? this.findGoal(this.state.month).goal : ''}
-                onChange={e => this.setState({ goal: e.target.value })}
-              />
-            </Dialog>
-            <Dialog
-              title='Week of March 1'
-              actions={weekActions}
-              modal={true}
-              open={this.state.week}
-            >
-              <SelectField
-                floatingLabelText="Workout #1"
-                value={this.state.workout1}
-                onChange={this.workout1Change}
-                autoWidth={true}
-              >
-                <MenuItem value={0} primaryText="None" />
-                <MenuItem value={30} primaryText="30 minutes" />
-                <MenuItem value={60} primaryText="60 minutes" />
-                <MenuItem value={90} primaryText="90 minutes" />
-              </SelectField><br />
-              <SelectField
-                floatingLabelText="Workout #2"
-                value={this.state.workout2}
-                onChange={this.workout2Change}
-                autoWidth={true}
-              >
-                <MenuItem value={0} primaryText="None" />
-                <MenuItem value={30} primaryText="30 minutes" />
-                <MenuItem value={60} primaryText="60 minutes" />
-                <MenuItem value={90} primaryText="90 minutes" />
-              </SelectField><br />
-              <SelectField
-                floatingLabelText="Workout #3"
-                value={this.state.workout3}
-                onChange={this.workout3Change}
-                autoWidth={true}
-              >
-                <MenuItem value={0} primaryText="None" />
-                <MenuItem value={30} primaryText="30 minutes" />
-                <MenuItem value={60} primaryText="60 minutes" />
-                <MenuItem value={90} primaryText="90 minutes" />
-              </SelectField><br />
-              <TextField
-                floatingLabelText="Open Water Swims"
-              />
-            </Dialog>
-          </div>
-        )
-      } else {
-        return (
-          <div>
-            <DatePicker
-              firstDayOfWeek={0}
-              hintText='Set Start Date'
-              value={this.state.startDate}
-              onChange={this.selectStartDate}
-              autoOk={true}
-            />
-            <DatePicker
-              firstDayOfWeek={0}
-              hintText='Set End Date'
-              value={this.state.startDate}
-              onChange={this.selectEndDate}
-              autoOk={true}
-            />
-          </div>
-        )
-      }
-    } else {
+    if (weeks.length) {
       return (
         <div>
           <Table>
-            <TableHeader displaySelectAll={false} >
+            <TableHeader displaySelectAll={false} adjustForCheckbox={false} >
               <TableRow>
                 <TableHeaderColumn>Week</TableHeaderColumn>
                 <TableHeaderColumn>Workout #1</TableHeaderColumn>
@@ -259,33 +143,118 @@ class Calendar extends Component {
                 <TableHeaderColumn>Workout #3</TableHeaderColumn>
                 <TableHeaderColumn>Open Water Swims</TableHeaderColumn>
                 <TableHeaderColumn>Notes</TableHeaderColumn>
+                <TableHeaderColumn></TableHeaderColumn>
               </TableRow>
             </TableHeader>
           </Table>
-          {goals.map((month, monthidx) =>
+          {months.map(month =>
           <Table>
             <TableHeader displaySelectAll={false} >
-              <TableRow>
+              <TableRow >
                 <TableHeaderColumn colSpan="3">
-                  {`${month.name} -- Goal: ${month.goal} `}
+                  {`${month} -- Goal: ${this.findGoal(month) ? this.findGoal(month).goal : ''}`}
+                  { coach ? <IconButton onTouchTap={() => this.openGoalEditor(month)} ><Pencil /></IconButton> : null }
                 </TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              {weeks.filter(week => week.date.startsWith(month.name)).map((week, weekidx) =>
-                <TableRow>
+            <TableBody displayRowCheckbox={false}>
+              {weeks.filter(week => week.date.startsWith(month)).map(week =>
+                <TableRow key={week.id} selectable={false} >
                   <TableRowColumn>{week.date}</TableRowColumn>
                   <TableRowColumn>{isNaN(week.workout1) ? week.workout1 : `${week.workout1} minutes`}</TableRowColumn>
                   <TableRowColumn>{isNaN(week.workout2) ? week.workout2 : `${week.workout2} minutes`}</TableRowColumn>
                   <TableRowColumn>{isNaN(week.workout3) ? week.workout3 : `${week.workout3} minutes`}</TableRowColumn>
                   <TableRowColumn>{week.ows}</TableRowColumn>
-                  <TableRowColumn><IconButton onTouchTap={this.openMessages} ><Message /></IconButton></TableRowColumn>
+                  <TableRowColumn>
+                    <IconButton onTouchTap={this.openMessages} ><Message /></IconButton>
+                  </TableRowColumn>
+                  <TableRowColumn>
+                    { coach ? <IconButton onTouchTap={() => this.openWeekEditor(week)} ><Pencil /></IconButton> : null }
+                    { coach ? <IconButton onTouchTap={() => this.props.deleteWeek(week.id)}><Trash /></IconButton> : null}
+                  </TableRowColumn>
                 </TableRow>
               )}
             </TableBody>
           </Table>
           )}
+          { coach ? <IconButton onTouchTap={this.newWeek} ><Add /></IconButton> : null}
           <Messages />
+          <Dialog
+            title={this.state.month}
+            actions={goalActions}
+            modal={true}
+            open={this.state.goalDialog}
+          >
+            <TextField
+              floatingLabelText='Goal'
+              defaultValue={this.findGoal(this.state.month) ? this.findGoal(this.state.month).goal : ''}
+              onChange={e => this.setState({ goal: e.target.value })}
+            />
+          </Dialog>
+          <Dialog
+            title={`Week of ${this.state.week}`}
+            actions={weekActions}
+            modal={true}
+            open={this.state.weekDialog}
+          >
+            <SelectField
+              floatingLabelText="Workout #1"
+              value={this.state.workout1}
+              onChange={this.workout1Change}
+              autoWidth={true}
+            >
+              <MenuItem value={'-'} primaryText="None" />
+              <MenuItem value={'30'} primaryText="30 minutes" />
+              <MenuItem value={'60'} primaryText="60 minutes" />
+              <MenuItem value={'90'} primaryText="90 minutes" />
+            </SelectField><br />
+            <SelectField
+              floatingLabelText="Workout #2"
+              value={this.state.workout2}
+              onChange={this.workout2Change}
+              autoWidth={true}
+            >
+              <MenuItem value={'-'} primaryText="None" />
+              <MenuItem value={'30'} primaryText="30 minutes" />
+              <MenuItem value={'60'} primaryText="60 minutes" />
+              <MenuItem value={'90'} primaryText="90 minutes" />
+            </SelectField><br />
+            <SelectField
+              floatingLabelText="Workout #3"
+              value={this.state.workout3}
+              onChange={this.workout3Change}
+              autoWidth={true}
+            >
+              <MenuItem value={'-'} primaryText="None" />
+              <MenuItem value={'30'} primaryText="30 minutes" />
+              <MenuItem value={'60'} primaryText="60 minutes" />
+              <MenuItem value={'90'} primaryText="90 minutes" />
+            </SelectField><br />
+            <TextField
+              floatingLabelText="Open Water Swims"
+              defaultValue={this.state.ows === '-' ? '' : this.state.ows}
+              onChange={this.owsChange}
+            />
+          </Dialog>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <DatePicker
+            firstDayOfWeek={0}
+            hintText='Set Start Date'
+            value={this.state.startDate}
+            onChange={this.selectStartDate}
+            autoOk={true}
+          />
+          <DatePicker
+            firstDayOfWeek={0}
+            hintText='Set End Date'
+            value={this.state.startDate}
+            onChange={this.selectEndDate}
+            autoOk={true}
+          />
         </div>
       )
     }
@@ -294,4 +263,4 @@ class Calendar extends Component {
 
 const mapState = ({ weeks, goals }) => ({ weeks, goals })
 
-export default connect(mapState, { setWeeks, setGoal })(Calendar)
+export default connect(mapState, { setWeeks, setGoal, updateWeek, deleteWeek, addWeek })(Calendar)

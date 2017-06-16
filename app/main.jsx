@@ -18,13 +18,20 @@ import Resources from './components/Resources'
 import Login from './components/Login'
 import WhoAmI from './components/WhoAmI'
 import NotFound from './components/NotFound'
+import { getWeeks } from './reducers/weeks'
+import { getGoals } from './reducers/goals'
+
+const onAppEnter = () => {
+  store.dispatch(getWeeks())
+  store.dispatch(getGoals())
+}
 
 render(
   <MuiThemeProvider>
     <Provider store={store}>
       <Router history={browserHistory}>
         <Route path="/" component={App}>
-          <IndexRoute component={Calendar} />
+          <IndexRoute component={Calendar} onEnter={onAppEnter} />
           <Route path='/workouts' component={Workouts} />
           <Route path='/workout' component={Workout} />
           <Route path='/drills' component={Drills} />
