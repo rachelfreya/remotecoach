@@ -10,11 +10,13 @@ import TextField from 'material-ui/TextField'
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
 
+import { close } from '../reducers/drawer'
+
 const messages = [{user: 'Abby', text: 'hello'}, {user: 'Barbara', text: 'hi'}]
 
-export const Messages = () => (
-  <Drawer width={300} openSecondary={true} open={false} >
-    <AppBar title="Messages" iconElementLeft={<IconButton><NavigationClose /></IconButton>} />
+const Messages = (props) => (
+  <Drawer width={300} openSecondary={true} open={props.drawer} >
+    <AppBar title="Messages" iconElementLeft={<IconButton onTouchTap={props.close} ><NavigationClose /></IconButton>} />
     <List>
       {messages.map(message =>
       <div>
@@ -35,6 +37,6 @@ export const Messages = () => (
   </Drawer>
 )
 
-// const mapState = ({drawer}) => ({drawer})
+const mapState = ({drawer}) => ({drawer})
 
-// export default connect(mapState, {closeDrawer})(Messages)
+export default connect(mapState, {close})(Messages)
