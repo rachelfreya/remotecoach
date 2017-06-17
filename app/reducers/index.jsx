@@ -5,7 +5,9 @@ const rootReducer = combineReducers({
   weeks: require('./weeks').default,
   goals: require('./goals').default,
   drawer: require('./drawer').default,
-  drills: require('./drills').default
+  drills: require('./drills').default,
+  resources: require('./resources').default,
+  workouts: require('./workouts').default
 })
 
 export default rootReducer

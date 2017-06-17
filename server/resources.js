@@ -10,9 +10,12 @@ module.exports = require('express').Router()
       .catch(next))
   .post('/', (req, res, next) =>
       Resource.create(req.body)
-      .then(resource => res.status(201).json(resource))
+      .then(resource => Resource.findAll())
+      .then(resources => res.json(resources))
       .catch(next))
   .delete('/:id', (req, res, next) =>
       Resource.findById(req.params.id)
       .then(resource => resource.destroy())
+      .then(() => Resource.findAll())
+      .then(resources => res.json(resources))
       .catch(next))
