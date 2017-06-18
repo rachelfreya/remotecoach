@@ -23,6 +23,7 @@ import { getGoals } from './reducers/goals'
 import { getDrills } from './reducers/drills'
 import { getResources } from './reducers/resources'
 import { getWorkouts } from './reducers/workouts'
+import { getWorkout } from './reducers/workout'
 
 const onAppEnter = () => {
   store.dispatch(getWeeks())
@@ -33,6 +34,8 @@ const onDrillsEnter = () => store.dispatch(getDrills())
 
 const onWorkoutsEnter = () => store.dispatch(getWorkouts())
 
+const onWorkoutEnter = nextRouterState => store.dispatch(getWorkout(nextRouterState.params.id))
+
 const onResourcesEnter = () => store.dispatch(getResources())
 
 render(
@@ -42,7 +45,7 @@ render(
         <Route path="/" component={App}>
           <IndexRoute component={Calendar} onEnter={onAppEnter} />
           <Route path='/workouts' component={Workouts} onEnter={onWorkoutsEnter} />
-          <Route path='/workout' component={Workout} />
+          <Route path='/workouts/:id' component={Workout} onEnter={onWorkoutEnter} />
           <Route path='/drills' component={Drills} onEnter={onDrillsEnter} />
           <Route path='/resources' component={Resources} onEnter={onResourcesEnter} />
         </Route>

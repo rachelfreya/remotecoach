@@ -36,7 +36,7 @@ class Workouts extends Component {
   yardChange = e => this.setState({ yards: e.target.value })
   save = () => {
     this.close()
-    this.props.addWorkout({ name: this.state.name, yardage: this.state.yards })
+    this.props.addWorkout({ name: this.state.name, total: this.state.yards })
   }
   render() {
     const actions = [
@@ -68,7 +68,7 @@ class Workouts extends Component {
               <TableRowColumn>
                 <Link to={`/workouts/${workout.id}`}>{workout.name}</Link>
               </TableRowColumn>
-              <TableRowColumn>{workout.yardage}</TableRowColumn>
+              <TableRowColumn>{workout.total}</TableRowColumn>
               <TableRowColumn>
                 {coach ? <IconButton onTouchTap={() => this.props.deleteWorkout(workout.id)} ><Trash /></IconButton> : null}
               </TableRowColumn>

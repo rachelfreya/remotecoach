@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 
 import { List, ListItem } from 'material-ui/List'
 import Subheader from 'material-ui/Subheader'
@@ -11,7 +12,8 @@ import IconButton from 'material-ui/IconButton'
 import Pencil from 'material-ui/svg-icons/content/create'
 import Trash from 'material-ui/svg-icons/action/delete'
 
-import { editWorkout, deleteWorkout } from '../reducers/workout'
+import { editWorkout } from '../reducers/workout'
+import { deleteWorkout } from '../reducers/workouts'
 
 const coach = true
 
@@ -38,7 +40,11 @@ class Workout extends Component {
   total = e => this.setState({ yards: e.target.value })
   save = () => {
     this.close()
-    this.props.editWorkout({ warmup: this.state.warmup, set1: this.state.set1, set2: this.state.set2, set3: this.state.set3, cooldown: this.state.cooldown, total: this.state.yards })
+    this.props.editWorkout(this.props.selectedWorkout.id, { warmup: this.state.warmup, set1: this.state.set1, set2: this.state.set2, set3: this.state.set3, cooldown: this.state.cooldown, total: this.state.yards })
+  }
+  delete = id => {
+    this.props.deleteWorkout(id)
+    browserHistory.replace('/workouts')
   }
   render() {
     const actions = [
@@ -56,9 +62,9 @@ class Workout extends Component {
     const workout = this.props.selectedWorkout
     return (
       <div>
-        <Subheader>All About That Kick
+        <Subheader>{workout.name}
           {coach ? <IconButton onTouchTap={this.open} ><Pencil /></IconButton> : null}
-          {coach ? <IconButton onTouchTap={() => this.props.deleteWorkout(workout.id)} ><Trash /></IconButton> : null}
+          {coach ? <IconButton onTouchTap={() => this.delete(workout.id)} ><Trash /></IconButton> : null}
         </Subheader>
         <List>
           <ListItem primaryText='Warm Up' secondaryText={workout.warmup} />
@@ -78,27 +84,27 @@ class Workout extends Component {
         >
           <TextField
             floatingLabelText="Warm Up"
-            defaultValue={workout.warmup}
+            defaultValue={workout.warmup === '-' ? '' : workout.warmup}
             onChange={this.warmup}
           /><br />
           <TextField
             floatingLabelText="Set #1"
-            defaultValue={workout.set1}
+            defaultValue={workout.set1 === '-' ? '' : workout.set1}
             onChange={this.set1}
           /><br />
           <TextField
             floatingLabelText="Set #2"
-            defaultValue={workout.set2}
+            defaultValue={workout.set2 === '-' ? '' : workout.set2}
             onChange={this.set2}
           /><br />
           <TextField
             floatingLabelText="Set #3"
-            defaultValue={workout.set3}
+            defaultValue={workout.set3 === '-' ? '' : workout.set3}
             onChange={this.set3}
           /><br />
           <TextField
             floatingLabelText="Cool Down"
-            defaultValue={workout.cooldown}
+            defaultValue={workout.cooldown === '-' ? '' : workout.cooldown}
             onChange={this.cooldown}
           /><br />
           <TextField
@@ -115,20 +121,3 @@ class Workout extends Component {
 const mapState = ({ selectedWorkout }) => ({ selectedWorkout })
 
 export default connect(mapState, { editWorkout, deleteWorkout })(Workout)
-
-// else {
-//       return (
-//         <div>
-//           <Subheader>All About That Kick</Subheader>
-//           <List>
-//             <ListItem primaryText='Warm Up' secondaryText='500 free' />
-//             <ListItem primaryText='Set #1' secondaryText='500 free' />
-//             <ListItem primaryText='Set #2' secondaryText='500 free' />
-//             <ListItem primaryText='Set #3' secondaryText='500 free' />
-//             <ListItem primaryText='Cool Down' secondaryText='500 free' />
-//             <Divider />
-//             <ListItem primaryText='Total Yards' secondaryText='500 free' />
-//           </List>
-//         </div>
-//       )
-//     }

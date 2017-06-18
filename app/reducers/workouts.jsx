@@ -32,9 +32,4 @@ export const deleteWorkout = id => dispatch => {
   .catch(err => console.error(err))
 }
 
-export const editWorkout = id => dispatch => {
-  axios.put(`/api/workouts/${id}`)
-  .then(res => dispatch)
-}
-
 export default reducer
