@@ -8,7 +8,9 @@ const rootReducer = combineReducers({
   drills: require('./drills').default,
   resources: require('./resources').default,
   workouts: require('./workouts').default,
-  selectedWorkout: require('./workout').default
+  selectedWorkout: require('./workout').default,
+  messages: require('./messages').default,
+  currentWeek: require('./week').default
 })
 
 export default rootReducer

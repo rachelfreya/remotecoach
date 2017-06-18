@@ -21,26 +21,15 @@ class Workout extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      open: false,
-      warmup: '',
-      set1: '',
-      set2: '',
-      set3: '',
-      cooldown: '',
-      yards: null
+      open: false
     }
   }
   open = () => this.setState({open: true})
   close = () => this.setState({open: false})
-  warmup = e => this.setState({ warmup: e.target.value })
-  set1 = e => this.setState({ set1: e.target.value })
-  set2 = e => this.setState({ set2: e.target.value })
-  set3 = e => this.setState({ set3: e.target.value })
-  cooldown = e => this.setState({ cooldown: e.target.value })
-  total = e => this.setState({ yards: e.target.value })
-  save = () => {
+  save = e => {
+    e.preventDefault()
+    this.props.editWorkout(this.props.selectedWorkout.id, { warmup: e.target.warmup.value, set1: e.target.set1.value, set2: e.target.set2.value, set3: e.target.set3.value, cooldown: e.target.cooldown.value, total: e.target.total.value })
     this.close()
-    this.props.editWorkout(this.props.selectedWorkout.id, { warmup: this.state.warmup, set1: this.state.set1, set2: this.state.set2, set3: this.state.set3, cooldown: this.state.cooldown, total: this.state.yards })
   }
   delete = id => {
     this.props.deleteWorkout(id)
@@ -56,7 +45,8 @@ class Workout extends Component {
       <FlatButton
         label="Save"
         primary={true}
-        onTouchTap={this.save}
+        type="submit"
+        form="edit"
       />
     ]
     const workout = this.props.selectedWorkout
@@ -82,36 +72,43 @@ class Workout extends Component {
           open={this.state.open}
           autoScrollBodyContent={true}
         >
-          <TextField
-            floatingLabelText="Warm Up"
-            defaultValue={workout.warmup === '-' ? '' : workout.warmup}
-            onChange={this.warmup}
-          /><br />
-          <TextField
-            floatingLabelText="Set #1"
-            defaultValue={workout.set1 === '-' ? '' : workout.set1}
-            onChange={this.set1}
-          /><br />
-          <TextField
-            floatingLabelText="Set #2"
-            defaultValue={workout.set2 === '-' ? '' : workout.set2}
-            onChange={this.set2}
-          /><br />
-          <TextField
-            floatingLabelText="Set #3"
-            defaultValue={workout.set3 === '-' ? '' : workout.set3}
-            onChange={this.set3}
-          /><br />
-          <TextField
-            floatingLabelText="Cool Down"
-            defaultValue={workout.cooldown === '-' ? '' : workout.cooldown}
-            onChange={this.cooldown}
-          /><br />
-          <TextField
-            floatingLabelText="Total Yards"
-            defaultValue={workout.total}
-            onChange={this.total}
-          />
+          <form id='edit' onSubmit={this.save}>
+            <TextField
+              floatingLabelText="Warm Up"
+              defaultValue={workout.warmup === '-' ? '' : workout.warmup}
+              name='warmup'
+              rows={2}
+            /><br />
+            <TextField
+              floatingLabelText="Set #1"
+              defaultValue={workout.set1 === '-' ? '' : workout.set1}
+              name='set1'
+              rows={4}
+            /><br />
+            <TextField
+              floatingLabelText="Set #2"
+              defaultValue={workout.set2 === '-' ? '' : workout.set2}
+              name='set2'
+              rows={4}
+            /><br />
+            <TextField
+              floatingLabelText="Set #3"
+              defaultValue={workout.set3 === '-' ? '' : workout.set3}
+              name='set3'
+              rows={4}
+            /><br />
+            <TextField
+              floatingLabelText="Cool Down"
+              defaultValue={workout.cooldown === '-' ? '' : workout.cooldown}
+              name='cooldown'
+              rows={2}
+            /><br />
+            <TextField
+              floatingLabelText="Total Yards"
+              defaultValue={workout.total}
+              name='total'
+            />
+          </form>
         </Dialog>
       </div>
     )

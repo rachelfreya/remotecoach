@@ -7,7 +7,6 @@ api
   .use('/auth', require('./auth'))
   .use('/users', require('./users'))
   .use('/workouts', require('./workouts'))
-  .use('/messages', require('./messages'))
   .use('/weeks', require('./weeks'))
   .use('/drills', require('./drills'))
   .use('/resources', require('./resources'))
