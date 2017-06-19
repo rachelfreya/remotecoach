@@ -19,8 +19,6 @@ import Trash from 'material-ui/svg-icons/action/delete'
 
 import { addWorkout, deleteWorkout } from '../reducers/workouts'
 
-const coach = true
-
 class Workouts extends Component {
   constructor(props) {
     super(props)
@@ -51,7 +49,7 @@ class Workouts extends Component {
         onTouchTap={this.save}
       />
     ]
-    const workouts = this.props.workouts
+    const workouts = this.props.workouts, coach = this.props.coach
     return (
       <div>
         <Table>
@@ -99,6 +97,6 @@ class Workouts extends Component {
   }
 }
 
-const mapState = ({ workouts }) => ({ workouts })
+const mapState = ({ workouts, coach }) => ({ workouts, coach })
 
 export default connect(mapState, { addWorkout, deleteWorkout })(Workouts)

@@ -9,8 +9,6 @@ import IconButton from 'material-ui/IconButton'
 
 import { addResource, deleteResource } from '../reducers/resources'
 
-const coach = true
-
 class Resources extends Component {
   constructor(props) {
     super(props)
@@ -29,8 +27,7 @@ class Resources extends Component {
     this.props.addResource({ name: this.state.name, url: this.state.url })
   }
   render() {
-    const resources = this.props.resources
-    console.log('RESOURCES', resources)
+    const resources = this.props.resources, coach = this.props.coach
     const actions = [
       <FlatButton
         label="Cancel"
@@ -75,6 +72,6 @@ class Resources extends Component {
   }
 }
 
-const mapState = ({ resources }) => ({ resources })
+const mapState = ({ resources, coach }) => ({ resources, coach })
 
 export default connect(mapState, { addResource, deleteResource })(Resources)

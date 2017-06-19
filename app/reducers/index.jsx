@@ -10,7 +10,8 @@ const rootReducer = combineReducers({
   workouts: require('./workouts').default,
   selectedWorkout: require('./workout').default,
   messages: require('./messages').default,
-  currentWeek: require('./week').default
+  currentWeek: require('./week').default,
+  coach: require('./user').default
 })
 
 export default rootReducer

@@ -1,5 +1,3 @@
-import axios from 'axios'
-
 const OPEN = 'OPEN_DRAWER'
 const CLOSE = 'CLOSE_DRAWER'
 

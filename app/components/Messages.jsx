@@ -23,14 +23,14 @@ class Messages extends Component {
   }
   textChange = e => this.setState({ text: e.target.value })
   newMessage = () => {
-    this.props.sendMessage(this.props.currentWeek, {name: 'Abby', text: this.state.text, weekId: this.props.currentWeek})
+    const name = this.props.coach ? 'Abby' : 'Barbara'
+    this.props.sendMessage(this.props.currentWeek, {name: name, text: this.state.text, weekId: this.props.currentWeek})
     this.setState({ text: '' })
-    console.log(this.state.text)
   }
   render() {
     const messages = this.props.messages
     return (
-    <Drawer width={300} openSecondary={true} open={this.props.drawer} >
+    <Drawer width={500} openSecondary={true} open={this.props.drawer} >
       <AppBar title='Messages' iconElementLeft={<IconButton onTouchTap={this.props.close} ><NavigationClose /></IconButton>} />
       <List>
         {messages.map(message =>
@@ -50,13 +50,13 @@ class Messages extends Component {
         rows={2}
         onChange={this.textChange}
         value={this.state.text}
-      />
+      /><br />
       <RaisedButton label='Send' primary={true} onTouchTap={this.newMessage} />
     </Drawer>
     )
   }
 }
 
-const mapState = ({drawer, messages, currentWeek}) => ({drawer, messages, currentWeek})
+const mapState = ({drawer, messages, currentWeek, coach}) => ({drawer, messages, currentWeek, coach})
 
 export default connect(mapState, {close, sendMessage})(Messages)

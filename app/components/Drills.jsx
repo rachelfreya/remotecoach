@@ -12,8 +12,6 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
 import { addDrill, deleteDrill } from '../reducers/drills'
 
-const coach = false
-
 class Drills extends Component {
   constructor(props) {
     super(props)
@@ -45,7 +43,7 @@ class Drills extends Component {
         onTouchTap={this.save}
       />
     ]
-    const drills = this.props.drills
+    const drills = this.props.drills, coach = this.props.coach
     if (coach) {
       return (
         <div>
@@ -91,6 +89,6 @@ class Drills extends Component {
   }
 }
 
-const mapState = ({ drills }) => ({ drills })
+const mapState = ({ drills, coach }) => ({ drills, coach })
 
 export default connect(mapState, { addDrill, deleteDrill })(Drills)

@@ -29,8 +29,6 @@ import { setGoal } from '../reducers/goals'
 import { open } from '../reducers/drawer'
 import { setWeek } from '../reducers/week'
 
-const coach = true
-
 class Calendar extends Component {
   constructor(props) {
     super(props)
@@ -84,9 +82,7 @@ class Calendar extends Component {
     this.closeGoalEditor()
   }
 
-  findGoal = month => {
-    this.props.goals.find(goal => goal.month === month)
-  }
+  findGoal = month => this.props.goals.find(goal => goal.month === month)
 
   workout1Change = (event, index, value) => this.setState({workout1: value})
 
@@ -114,7 +110,7 @@ class Calendar extends Component {
   }
 
   render() {
-    const weeks = this.props.weeks
+    const weeks = this.props.weeks, coach = this.props.coach
     const months = Array.from(new Set(weeks.map(week => week.date.split(' ')[0])))
     const weekActions = [
       <FlatButton
@@ -270,6 +266,6 @@ class Calendar extends Component {
   }
 }
 
-const mapState = ({ weeks, goals }) => ({ weeks, goals })
+const mapState = ({ weeks, goals, coach }) => ({ weeks, goals, coach })
 
 export default connect(mapState, { setWeeks, setGoal, updateWeek, deleteWeek, addWeek, open, loadMessages, setWeek })(Calendar)

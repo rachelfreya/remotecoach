@@ -25,6 +25,6 @@ module.exports = require('express').Router()
   .delete('/:id', (req, res, next) =>
       Workout.findById(req.params.id)
       .then(workout => workout.destroy())
-      .then(Workout.findAll())
+      .then(() => Workout.findAll())
       .then(workouts => res.json(workouts))
       .catch(next))

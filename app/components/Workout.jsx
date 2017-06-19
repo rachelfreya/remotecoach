@@ -15,8 +15,6 @@ import Trash from 'material-ui/svg-icons/action/delete'
 import { editWorkout } from '../reducers/workout'
 import { deleteWorkout } from '../reducers/workouts'
 
-const coach = true
-
 class Workout extends Component {
   constructor(props) {
     super(props)
@@ -49,7 +47,7 @@ class Workout extends Component {
         form="edit"
       />
     ]
-    const workout = this.props.selectedWorkout
+    const workout = this.props.selectedWorkout, coach = this.props.coach
     return (
       <div>
         <Subheader>{workout.name}
@@ -115,6 +113,6 @@ class Workout extends Component {
   }
 }
 
-const mapState = ({ selectedWorkout }) => ({ selectedWorkout })
+const mapState = ({ selectedWorkout, coach }) => ({ selectedWorkout, coach })
 
 export default connect(mapState, { editWorkout, deleteWorkout })(Workout)

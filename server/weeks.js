@@ -42,7 +42,11 @@ module.exports = require('express').Router()
       .catch(next))
   .post('/:id/messages', (req, res, next) =>
       Message.create(req.body)
-      .then(message => Message.findAll())
+      .then(message => Message.findAll({
+        where: {
+          weekId: req.params.id
+        }
+      }))
       .then(messages => res.json(messages))
       .catch(next))
   .delete('/:id', (req, res, next) =>
