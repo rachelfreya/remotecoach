@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import Drawer from 'material-ui/Drawer'
@@ -9,32 +9,54 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import TextField from 'material-ui/TextField'
 import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
+import RaisedButton from 'material-ui/RaisedButton'
 
-const messages = [{user: 'Abby', text: 'hello'}, {user: 'Barbara', text: 'hi'}]
+import { close } from '../reducers/drawer'
+import { sendMessage } from '../reducers/messages'
 
-export const Messages = () => (
-  <Drawer width={300} openSecondary={true} open={false} >
-    <AppBar title="Messages" iconElementLeft={<IconButton><NavigationClose /></IconButton>} />
-    <List>
-      {messages.map(message =>
-      <div>
-        <ListItem
-          leftAvatar={<Avatar>{message.user[0]}</Avatar>}
-          secondaryText={message.text}
-          secondaryTextLines={2}
-        />
-        <Divider inset={true} />
-      </div>
-      )}
-    </List>
-    <TextField
-      floatingLabelText='New Message'
-      multiLine={true}
-      rows={2}
-    />
-  </Drawer>
-)
+class Messages extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      text: ''
+    }
+  }
+  textChange = e => this.setState({ text: e.target.value })
+  newMessage = () => {
+    const name = this.props.coach ? 'Abby' : 'Barbara'
+    this.props.sendMessage(this.props.currentWeek, {name: name, text: this.state.text, weekId: this.props.currentWeek})
+    this.setState({ text: '' })
+  }
+  render() {
+    const messages = this.props.messages
+    return (
+    <Drawer width={500} openSecondary={true} open={this.props.drawer} >
+      <AppBar title='Messages' iconElementLeft={<IconButton onTouchTap={this.props.close} ><NavigationClose /></IconButton>} />
+      <List>
+        {messages.map(message =>
+        <div>
+          <ListItem
+            leftAvatar={<Avatar>{message.name[0]}</Avatar>}
+            secondaryText={message.text}
+            secondaryTextLines={2}
+          />
+          <Divider inset={true} />
+        </div>
+        )}
+      </List>
+      <TextField
+        floatingLabelText='New Message'
+        multiLine={true}
+        rows={2}
+        onChange={this.textChange}
+        value={this.state.text}
+      /><br />
+      <RaisedButton label='Send' primary={true} onTouchTap={this.newMessage} />
+    </Drawer>
+    )
+  }
+}
 
-// const mapState = ({drawer}) => ({drawer})
+const mapState = ({drawer, messages, currentWeek, coach}) => ({drawer, messages, currentWeek, coach})
 
-// export default connect(mapState, {closeDrawer})(Messages)
+export default connect(mapState, {close, sendMessage})(Messages)

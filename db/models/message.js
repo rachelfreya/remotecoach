@@ -1,8 +1,9 @@
 'use strict'
 
-const {STRING} = require('sequelize')
+const {STRING, INTEGER} = require('sequelize')
 
 module.exports = db => db.define('messages', {
   name: STRING,
-  text: STRING
+  text: STRING,
+  weekId: INTEGER
 })

@@ -21,12 +21,13 @@ import MenuItem from 'material-ui/MenuItem'
 import Trash from 'material-ui/svg-icons/action/delete'
 import DatePicker from 'material-ui/DatePicker'
 
-import { Messages } from './Messages'
+import Messages from './Messages'
 import { convertMonth } from '../utils'
 import { setWeeks, updateWeek, deleteWeek, addWeek } from '../reducers/weeks'
+import { loadMessages } from '../reducers/messages'
 import { setGoal } from '../reducers/goals'
-
-const coach = true
+import { open } from '../reducers/drawer'
+import { setWeek } from '../reducers/week'
 
 class Calendar extends Component {
   constructor(props) {
@@ -63,7 +64,7 @@ class Calendar extends Component {
     }
     this.props.setWeeks(weeksArr)
   }
-  openWeekEditor = (week) => {
+  openWeekEditor = week => {
     this.setState({ weekDialog: true, week: week.date, workout1: week.workout1, workout2: week.workout2, workout3: week.workout3, ows: week.ows, weekId: week.id })
   }
 
@@ -76,14 +77,12 @@ class Calendar extends Component {
   closeGoalEditor = () => this.setState({ goalDialog: false })
 
   saveGoal = () => {
-    this.closeGoalEditor()
     const goal = {month: this.state.month, goal: this.state.goal}
     this.props.setGoal(goal)
+    this.closeGoalEditor()
   }
 
-  findGoal = (month) => {
-    this.props.goals.find(goal => goal.month === month)
-  }
+  findGoal = month => this.props.goals.find(goal => goal.month === month)
 
   workout1Change = (event, index, value) => this.setState({workout1: value})
 
@@ -104,8 +103,14 @@ class Calendar extends Component {
     this.props.addWeek({'date': `${convertMonth(nextWeek.getMonth())} ${nextWeek.getDate()}`})
   }
 
+  openMessages = weekId => {
+    this.props.setWeek(weekId)
+    this.props.loadMessages(weekId)
+    this.props.open()
+  }
+
   render() {
-    const weeks = this.props.weeks
+    const weeks = this.props.weeks, coach = this.props.coach
     const months = Array.from(new Set(weeks.map(week => week.date.split(' ')[0])))
     const weekActions = [
       <FlatButton
@@ -166,7 +171,7 @@ class Calendar extends Component {
                   <TableRowColumn>{isNaN(week.workout3) ? week.workout3 : `${week.workout3} minutes`}</TableRowColumn>
                   <TableRowColumn>{week.ows}</TableRowColumn>
                   <TableRowColumn>
-                    <IconButton onTouchTap={this.openMessages} ><Message /></IconButton>
+                    <IconButton onTouchTap={() => this.openMessages(week.id)} ><Message /></IconButton>
                   </TableRowColumn>
                   <TableRowColumn>
                     { coach ? <IconButton onTouchTap={() => this.openWeekEditor(week)} ><Pencil /></IconButton> : null }
@@ -261,6 +266,6 @@ class Calendar extends Component {
   }
 }
 
-const mapState = ({ weeks, goals }) => ({ weeks, goals })
+const mapState = ({ weeks, goals, coach }) => ({ weeks, goals, coach })
 
-export default connect(mapState, { setWeeks, setGoal, updateWeek, deleteWeek, addWeek })(Calendar)
+export default connect(mapState, { setWeeks, setGoal, updateWeek, deleteWeek, addWeek, open, loadMessages, setWeek })(Calendar)

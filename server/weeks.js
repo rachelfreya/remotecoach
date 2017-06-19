@@ -2,6 +2,7 @@
 
 const db = require('APP/db')
 const Week = db.model('weeks')
+const Message = db.model('messages')
 
 module.exports = require('express').Router()
   .get('/', (req, res, next) =>
@@ -30,6 +31,23 @@ module.exports = require('express').Router()
         ]
       }))
       .then(weeks => res.json(weeks))
+      .catch(next))
+  .get('/:id/messages', (req, res, next) =>
+      Message.findAll({
+        where: {
+          weekId: req.params.id
+        }
+      })
+      .then(messages => res.json(messages))
+      .catch(next))
+  .post('/:id/messages', (req, res, next) =>
+      Message.create(req.body)
+      .then(message => Message.findAll({
+        where: {
+          weekId: req.params.id
+        }
+      }))
+      .then(messages => res.json(messages))
       .catch(next))
   .delete('/:id', (req, res, next) =>
       Week.findById(req.params.id)

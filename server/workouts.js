@@ -10,7 +10,8 @@ module.exports = require('express').Router()
       .catch(next))
   .post('/', (req, res, next) =>
       Workout.create(req.body)
-      .then(workout => res.status(201).json(workout))
+      .then(workout => Workout.findAll())
+      .then(workouts => res.json(workouts))
       .catch(next))
   .get('/:id', (req, res, next) =>
       Workout.findById(req.params.id)
@@ -24,4 +25,6 @@ module.exports = require('express').Router()
   .delete('/:id', (req, res, next) =>
       Workout.findById(req.params.id)
       .then(workout => workout.destroy())
+      .then(() => Workout.findAll())
+      .then(workouts => res.json(workouts))
       .catch(next))

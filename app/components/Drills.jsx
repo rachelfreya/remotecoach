@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import ReactPlayer from 'react-player'
+
 import {GridList, GridTile} from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
 import Add from 'material-ui/svg-icons/content/add'
@@ -8,19 +10,26 @@ import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 
-const coach = true
+import { addDrill, deleteDrill } from '../reducers/drills'
 
-const drills = [{name: 'Catchup', url: 'https://www.youtube.com/watch?v=GUULNJEdKU8'}, {name: 'Fingertip drag', url: 'https://www.youtube.com/watch?v=3mBb2djmdv0'}]
-
-export default class Drills extends Component {
+class Drills extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      open: false
+      open: false,
+      drillName: '',
+      drillUrl: ''
     }
   }
   open = () => this.setState({open: true})
   close = () => this.setState({open: false})
+  save = () => {
+    this.close()
+    this.props.addDrill({ name: this.state.drillName, url: this.state.drillUrl })
+  }
+  nameChange = e => this.setState({ drillName: e.target.value })
+  urlChange = e => this.setState({ drillUrl: e.target.value })
+
   render() {
     const actions = [
       <FlatButton
@@ -31,15 +40,16 @@ export default class Drills extends Component {
       <FlatButton
         label="Save"
         primary={true}
-        onTouchTap={this.close}
+        onTouchTap={this.save}
       />
     ]
+    const drills = this.props.drills, coach = this.props.coach
     if (coach) {
       return (
         <div>
           <GridList cellHeight={300}>
             {drills.map(drill =>
-            <GridTile title={drill.name} titlePosition='top' actionIcon={<IconButton><NavigationClose color="white" /></IconButton>} >
+            <GridTile title={drill.name} titlePosition='top' actionIcon={<IconButton onTouchTap={() => this.props.deleteDrill(drill.id)} ><NavigationClose color="white" /></IconButton>} >
               <ReactPlayer url={drill.url} width={500} height={300} controls />
             </GridTile>
             )}
@@ -54,9 +64,11 @@ export default class Drills extends Component {
           >
             <TextField
               floatingLabelText="Drill Name"
+              onChange={this.nameChange}
             /><br />
             <TextField
               floatingLabelText="URL"
+              onChange={this.urlChange}
             />
           </Dialog>
         </div>
@@ -76,3 +88,7 @@ export default class Drills extends Component {
     }
   }
 }
+
+const mapState = ({ drills, coach }) => ({ drills, coach })
+
+export default connect(mapState, { addDrill, deleteDrill })(Drills)

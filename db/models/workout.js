@@ -1,13 +1,13 @@
 'use strict'
 
-const {STRING} = require('sequelize')
+const {STRING, INTEGER} = require('sequelize')
 
 module.exports = db => db.define('workouts', {
   name: STRING,
-  total: STRING,
-  warmup: STRING,
-  set1: STRING,
-  set2: STRING,
-  set3: STRING,
-  cooldown: STRING
+  total: INTEGER,
+  warmup: {type: STRING, defaultValue: '-'},
+  set1: {type: STRING, defaultValue: '-'},
+  set2: {type: STRING, defaultValue: '-'},
+  set3: {type: STRING, defaultValue: '-'},
+  cooldown: {type: STRING, defaultValue: '-'}
 })
