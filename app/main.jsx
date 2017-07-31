@@ -9,7 +9,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 injectTapEventPlugin()
 
 import store from './store'
-import Calendar from './components/Calendar'
+import Home from './components/Home'
 import App from './components/App'
 import Workouts from './components/Workouts'
 import Workout from './components/Workout'
@@ -43,7 +43,7 @@ render(
     <Provider store={store}>
       <Router history={browserHistory}>
         <Route path="/" component={App}>
-          <IndexRoute component={Calendar} onEnter={onAppEnter} />
+          <IndexRoute component={Home} onEnter={onAppEnter} />
           <Route path='/workouts' component={Workouts} onEnter={onWorkoutsEnter} />
           <Route path='/workouts/:id' component={Workout} onEnter={onWorkoutEnter} />
           <Route path='/drills' component={Drills} onEnter={onDrillsEnter} />

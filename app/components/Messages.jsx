@@ -21,17 +21,23 @@ class Messages extends Component {
       text: ''
     }
   }
+
   textChange = e => this.setState({ text: e.target.value })
+
   newMessage = () => {
     const name = this.props.coach ? 'Abby' : 'Barbara'
-    this.props.sendMessage(this.props.currentWeek, {name: name, text: this.state.text, weekId: this.props.currentWeek})
+    this.props.sendMessage(this.props.currentWeek, { name: name, text: this.state.text, weekId: this.props.currentWeek, read: false })
     this.setState({ text: '' })
   }
+
   render() {
-    const messages = this.props.messages
+    const messages = this.props.messages,
+      close = <IconButton onTouchTap={this.props.close} >
+        <NavigationClose />
+      </IconButton>
     return (
     <Drawer width={500} openSecondary={true} open={this.props.drawer} >
-      <AppBar title='Messages' iconElementLeft={<IconButton onTouchTap={this.props.close} ><NavigationClose /></IconButton>} />
+      <AppBar title='Messages' iconElementLeft={close} />
       <List>
         {messages.map(message =>
         <div>

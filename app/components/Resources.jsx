@@ -7,6 +7,8 @@ import TextField from 'material-ui/TextField'
 import Trash from 'material-ui/svg-icons/action/delete'
 import IconButton from 'material-ui/IconButton'
 
+import AddResource from './AddResource'
+
 import { addResource, deleteResource } from '../reducers/resources'
 
 class Resources extends Component {
@@ -18,28 +20,22 @@ class Resources extends Component {
       url: ''
     }
   }
+
   open = () => this.setState({open: true})
+
   close = () => this.setState({open: false})
+
   changeName = e => this.setState({ name: e.target.value })
+
   changeUrl = e => this.setState({ url: e.target.value })
+
   save = () => {
     this.close()
     this.props.addResource({ name: this.state.name, url: this.state.url })
   }
+
   render() {
     const resources = this.props.resources, coach = this.props.coach
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.close}
-      />,
-      <FlatButton
-        label="Save"
-        primary={true}
-        onTouchTap={this.save}
-      />
-    ]
     return (
       <div>
         <h1>Resources</h1>
@@ -47,26 +43,14 @@ class Resources extends Component {
             {resources.map(resource =>
             <li>
               <a href={resource.url} target="_blank" >{resource.name}</a>
-              {coach ? <IconButton onTouchTap={() => this.props.deleteResource(resource.id)} ><Trash /></IconButton> : null}
+              {coach && <IconButton onTouchTap={() => this.props.deleteResource(resource.id)} >
+                <Trash />
+              </IconButton> }
             </li>
             )}
           </ul>
-          {coach ? <button onClick={this.open} >Add Resource</button> : null}
-          <Dialog
-            title='Add Resource'
-            actions={actions}
-            modal={true}
-            open={this.state.open}
-          >
-            <TextField
-              floatingLabelText="Resource Name"
-              onChange={this.changeName}
-            /><br />
-            <TextField
-              floatingLabelText="URL"
-              onChange={this.changeUrl}
-            />
-          </Dialog>
+          {coach && <button onClick={this.open} >Add Resource</button> }
+          <AddResource close={this.close} save={this.save} changeName={this.changeName} changeUrl={this.changeUrl} open={this.state.open} />
       </div>
     )
   }

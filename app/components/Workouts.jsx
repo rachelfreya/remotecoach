@@ -17,6 +17,8 @@ import FlatButton from 'material-ui/FlatButton'
 import TextField from 'material-ui/TextField'
 import Trash from 'material-ui/svg-icons/action/delete'
 
+import AddWorkout from './AddWorkout'
+
 import { addWorkout, deleteWorkout } from '../reducers/workouts'
 
 class Workouts extends Component {
@@ -28,27 +30,21 @@ class Workouts extends Component {
       yards: null
     }
   }
+
   open = () => this.setState({open: true})
+
   close = () => this.setState({open: false})
+
   nameChange = e => this.setState({ name: e.target.value })
+
   yardChange = e => this.setState({ yards: e.target.value })
+
   save = () => {
     this.close()
     this.props.addWorkout({ name: this.state.name, total: this.state.yards })
   }
+
   render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.close}
-      />,
-      <FlatButton
-        label="Save"
-        primary={true}
-        onTouchTap={this.save}
-      />
-    ]
     const workouts = this.props.workouts, coach = this.props.coach
     return (
       <div>
@@ -68,30 +64,18 @@ class Workouts extends Component {
               </TableRowColumn>
               <TableRowColumn>{workout.total}</TableRowColumn>
               <TableRowColumn>
-                {coach ? <IconButton onTouchTap={() => this.props.deleteWorkout(workout.id)} ><Trash /></IconButton> : null}
+                {coach && <IconButton onTouchTap={() => this.props.deleteWorkout(workout.id)} >
+                  <Trash />
+                </IconButton>}
               </TableRowColumn>
             </TableRow>
             )}
           </TableBody>
         </Table>
-        {coach ? <IconButton onTouchTap={this.open} >
-                  <Add />
-                </IconButton> : null}
-        <Dialog
-          title='Add Workout'
-          actions={actions}
-          modal={true}
-          open={this.state.open}
-        >
-          <TextField
-            floatingLabelText="Workout Name"
-            onChange={this.nameChange}
-          /><br />
-          <TextField
-            floatingLabelText="Total Yards"
-            onChange={this.yardChange}
-          />
-        </Dialog>
+        {coach && <IconButton onTouchTap={this.open} >
+          <Add />
+        </IconButton>}
+        <AddWorkout save={this.save} close={this.close} nameChange={this.nameChange} yardChange={this.yardChange} open={this.state.open} />
       </div>
     )
   }

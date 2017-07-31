@@ -1,6 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router'
-import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation'
+
+import { BottomNavigation, BottomNavigationItem } from 'material-ui/BottomNavigation'
 import Paper from 'material-ui/Paper'
 import Plan from 'material-ui/svg-icons/action/assignment'
 import Workouts from 'material-ui/svg-icons/places/pool'
@@ -14,10 +15,10 @@ const resources = <Resources />
 
 class BottomNavBar extends Component {
   state = {
-    selectedIndex: 0,
+    selectedIndex: 0
   }
 
-  select = (index) => this.setState({selectedIndex: index})
+  select = index => this.setState({ selectedIndex: index })
 
   render() {
     return (
@@ -25,28 +26,28 @@ class BottomNavBar extends Component {
         <BottomNavigation selectedIndex={this.state.selectedIndex}>
           <Link to='/' >
             <BottomNavigationItem
-              label="Plan"
+              label='Plan'
               icon={plan}
               onTouchTap={() => this.select(0)}
             />
           </Link>
           <Link to='/workouts' >
             <BottomNavigationItem
-              label="Sample Workouts"
+              label='Sample Workouts'
               icon={workouts}
               onTouchTap={() => this.select(1)}
             />
           </Link>
           <Link to='/drills' >
             <BottomNavigationItem
-              label="Drills"
+              label='Drills'
               icon={drills}
               onTouchTap={() => this.select(2)}
             />
           </Link>
           <Link to='/resources' >
             <BottomNavigationItem
-              label="Resources"
+              label='Resources'
               icon={resources}
               onTouchTap={() => this.select(2)}
             />
