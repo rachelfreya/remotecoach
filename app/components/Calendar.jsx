@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { button } from '../utils'
+
 import {
   Table,
   TableBody,
@@ -8,7 +10,6 @@ import {
   TableRow,
   TableRowColumn
 } from 'material-ui/Table'
-import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Message from 'material-ui/svg-icons/communication/mail-outline'
 import Pencil from 'material-ui/svg-icons/content/create'
@@ -22,11 +23,6 @@ const plus = <Add />,
 
 const Calendar = props => {
   const setWorkout = workout => isNaN(workout) ? workout : `${workout} minutes`
-
-  const button = (f, icon, arg) =>
-    <IconButton onTouchTap={() => f(arg)} >
-      {icon}
-    </IconButton>
 
   const editGoal = month => button(props.openGoalEditor, edit, month)
 

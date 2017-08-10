@@ -9,12 +9,12 @@ import WorkoutSelect from './WorkoutSelect'
 const Week = props => {
   const weekActions = [
     <FlatButton
-      label="Cancel"
+      label='Cancel'
       primary={true}
       onTouchTap={props.closeWeekEditor}
     />,
     <FlatButton
-      label="Save"
+      label='Save'
       primary={true}
       onTouchTap={props.saveWorkout}
     />
@@ -30,7 +30,7 @@ const Week = props => {
       <WorkoutSelect workoutName='Workout 2' workoutValue={props.workout2} workoutChange={props.workout2Change} /><br />
       <WorkoutSelect workoutName='Workout 3' workoutValue={props.workout3} workoutChange={props.workout3Change} /><br />
       <TextField
-        floatingLabelText="Open Water Swims"
+        floatingLabelText='Open Water Swims'
         defaultValue={props.ows === '-' ? '' : props.ows}
         onChange={props.owsChange}
       />

@@ -10,6 +10,9 @@ import IconButton from 'material-ui/IconButton'
 import AddResource from './AddResource'
 
 import { addResource, deleteResource } from '../reducers/resources'
+import { button } from '../utils'
+
+const trash = <Trash />
 
 class Resources extends Component {
   constructor(props) {
@@ -34,6 +37,8 @@ class Resources extends Component {
     this.props.addResource({ name: this.state.name, url: this.state.url })
   }
 
+  delete = id => button(this.props.deleteResource, trash, id)
+
   render() {
     const resources = this.props.resources, coach = this.props.coach
     return (
@@ -43,9 +48,7 @@ class Resources extends Component {
             {resources.map(resource =>
             <li>
               <a href={resource.url} target="_blank" >{resource.name}</a>
-              {coach && <IconButton onTouchTap={() => this.props.deleteResource(resource.id)} >
-                <Trash />
-              </IconButton> }
+              {coach && button()}
             </li>
             )}
           </ul>

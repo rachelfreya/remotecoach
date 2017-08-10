@@ -1,3 +1,7 @@
+import React from 'react'
+
+import IconButton from 'material-ui/IconButton'
+
 export const convertMonth = (n) => {
   switch (n) {
   case 0:
@@ -26,3 +30,8 @@ export const convertMonth = (n) => {
     return 'December'
   }
 }
+
+export const button = (f, icon, arg) =>
+  <IconButton onTouchTap={() => f(arg)} >
+    {icon}
+  </IconButton>

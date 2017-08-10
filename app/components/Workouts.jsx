@@ -20,6 +20,10 @@ import Trash from 'material-ui/svg-icons/action/delete'
 import AddWorkout from './AddWorkout'
 
 import { addWorkout, deleteWorkout } from '../reducers/workouts'
+import { button } from '../utils'
+
+const plus = <Add />,
+  trash = <Trash />
 
 class Workouts extends Component {
   constructor(props) {
@@ -44,6 +48,10 @@ class Workouts extends Component {
     this.props.addWorkout({ name: this.state.name, total: this.state.yards })
   }
 
+  add = () => button(this.open, plus)
+
+  delete = id => button(this.props.deleteWorkout, trash, id)
+
   render() {
     const workouts = this.props.workouts, coach = this.props.coach
     return (
@@ -64,17 +72,14 @@ class Workouts extends Component {
               </TableRowColumn>
               <TableRowColumn>{workout.total}</TableRowColumn>
               <TableRowColumn>
-                {coach && <IconButton onTouchTap={() => this.props.deleteWorkout(workout.id)} >
-                  <Trash />
-                </IconButton>}
+                {coach && this.delete(workout.id)} >
+                  }
               </TableRowColumn>
             </TableRow>
             )}
           </TableBody>
         </Table>
-        {coach && <IconButton onTouchTap={this.open} >
-          <Add />
-        </IconButton>}
+        {coach && this.add()}
         <AddWorkout save={this.save} close={this.close} nameChange={this.nameChange} yardChange={this.yardChange} open={this.state.open} />
       </div>
     )

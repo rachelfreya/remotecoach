@@ -13,6 +13,9 @@ import RaisedButton from 'material-ui/RaisedButton'
 
 import { close } from '../reducers/drawer'
 import { sendMessage } from '../reducers/messages'
+import { button } from '../utils'
+
+const x = <NavigationClose />
 
 class Messages extends Component {
   constructor(props) {
@@ -32,9 +35,7 @@ class Messages extends Component {
 
   render() {
     const messages = this.props.messages,
-      close = <IconButton onTouchTap={this.props.close} >
-        <NavigationClose />
-      </IconButton>
+      close = button(this.props.close, x)
     return (
     <Drawer width={500} openSecondary={true} open={this.props.drawer} >
       <AppBar title='Messages' iconElementLeft={close} />

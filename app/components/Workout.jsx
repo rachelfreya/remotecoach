@@ -12,8 +12,14 @@ import IconButton from 'material-ui/IconButton'
 import Pencil from 'material-ui/svg-icons/content/create'
 import Trash from 'material-ui/svg-icons/action/delete'
 
+import EditWorkout from './EditWorkout'
+
 import { editWorkout } from '../reducers/workout'
 import { deleteWorkout } from '../reducers/workouts'
+import { button } from '../utils'
+
+const pencil = <Pencil />,
+  trash = <Trash />
 
 class Workout extends Component {
   constructor(props) {
@@ -22,37 +28,33 @@ class Workout extends Component {
       open: false
     }
   }
+
   open = () => this.setState({open: true})
+
   close = () => this.setState({open: false})
+
   save = e => {
     e.preventDefault()
     this.props.editWorkout(this.props.selectedWorkout.id, { warmup: e.target.warmup.value, set1: e.target.set1.value, set2: e.target.set2.value, set3: e.target.set3.value, cooldown: e.target.cooldown.value, total: e.target.total.value })
     this.close()
   }
+
   delete = id => {
     this.props.deleteWorkout(id)
     browserHistory.replace('/workouts')
   }
+
+  edit = () => button(this.open, pencil)
+
+  remove = id => button(this.delete, trash, id)
+
   render() {
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onTouchTap={this.close}
-      />,
-      <FlatButton
-        label="Save"
-        primary={true}
-        type="submit"
-        form="edit"
-      />
-    ]
     const workout = this.props.selectedWorkout, coach = this.props.coach
     return (
       <div>
         <Subheader>{workout.name}
-          {coach ? <IconButton onTouchTap={this.open} ><Pencil /></IconButton> : null}
-          {coach ? <IconButton onTouchTap={() => this.delete(workout.id)} ><Trash /></IconButton> : null}
+          {coach && this.edit()}
+          {coach && this.remove(workout.id)}
         </Subheader>
         <List>
           <ListItem primaryText='Warm Up' secondaryText={workout.warmup} />
@@ -63,51 +65,7 @@ class Workout extends Component {
           <Divider />
           <ListItem primaryText='Total Yards' secondaryText={workout.total} />
         </List>
-        <Dialog
-          title='Edit Workout'
-          actions={actions}
-          modal={true}
-          open={this.state.open}
-          autoScrollBodyContent={true}
-        >
-          <form id='edit' onSubmit={this.save}>
-            <TextField
-              floatingLabelText="Warm Up"
-              defaultValue={workout.warmup === '-' ? '' : workout.warmup}
-              name='warmup'
-              rows={2}
-            /><br />
-            <TextField
-              floatingLabelText="Set #1"
-              defaultValue={workout.set1 === '-' ? '' : workout.set1}
-              name='set1'
-              rows={4}
-            /><br />
-            <TextField
-              floatingLabelText="Set #2"
-              defaultValue={workout.set2 === '-' ? '' : workout.set2}
-              name='set2'
-              rows={4}
-            /><br />
-            <TextField
-              floatingLabelText="Set #3"
-              defaultValue={workout.set3 === '-' ? '' : workout.set3}
-              name='set3'
-              rows={4}
-            /><br />
-            <TextField
-              floatingLabelText="Cool Down"
-              defaultValue={workout.cooldown === '-' ? '' : workout.cooldown}
-              name='cooldown'
-              rows={2}
-            /><br />
-            <TextField
-              floatingLabelText="Total Yards"
-              defaultValue={workout.total}
-              name='total'
-            />
-          </form>
-        </Dialog>
+        <EditWorkout close={this.close} workout={workout} open={this.state.open} save={this.save} />
       </div>
     )
   }
