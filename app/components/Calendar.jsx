@@ -11,6 +11,7 @@ import {
   TableRowColumn
 } from 'material-ui/Table'
 import FlatButton from 'material-ui/FlatButton'
+import Badge from 'material-ui/Badge'
 import Message from 'material-ui/svg-icons/communication/mail-outline'
 import Pencil from 'material-ui/svg-icons/content/create'
 import Add from 'material-ui/svg-icons/content/add'
@@ -69,7 +70,13 @@ const Calendar = props => {
               <TableRowColumn>{setWorkout(week.workout3)}</TableRowColumn>
               <TableRowColumn>{week.ows}</TableRowColumn>
               <TableRowColumn>
-                {messages(week.id)}
+                <Badge
+                  badgeContent={1}
+                  secondary={true}
+                  badgeStyle={{top: 12, right: 12}}
+                >
+                  {messages(week.id)}
+                </Badge>
               </TableRowColumn>
               <TableRowColumn>
                 { coach && editWeek(week) }

@@ -49,6 +49,12 @@ module.exports = require('express').Router()
       }))
       .then(messages => res.json(messages))
       .catch(next))
+  .put('/:id/messages', (req, res, next) =>
+      Message.update(
+        { read: true },
+        { where: { weekId: req.params.id } }
+      )
+      .catch(next))
   .delete('/:id', (req, res, next) =>
       Week.findById(req.params.id)
       .then(week => week.destroy())

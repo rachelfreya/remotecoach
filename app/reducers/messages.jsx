@@ -26,4 +26,9 @@ export const sendMessage = (weekId, message) => dispatch => {
   .catch(err => console.error(err))
 }
 
+export const markAsRead = weekId => dispatch => {
+  axios.put(`/api/weeks/${weekId}/messages`)
+  .catch(err => console.error(err))
+}
+
 export default reducer

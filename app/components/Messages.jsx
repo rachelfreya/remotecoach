@@ -11,59 +11,38 @@ import AppBar from 'material-ui/AppBar'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 
-import { close } from '../reducers/drawer'
-import { sendMessage } from '../reducers/messages'
 import { button } from '../utils'
 
 const x = <NavigationClose />
 
-class Messages extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      text: ''
-    }
-  }
-
-  textChange = e => this.setState({ text: e.target.value })
-
-  newMessage = () => {
-    const name = this.props.coach ? 'Abby' : 'Barbara'
-    this.props.sendMessage(this.props.currentWeek, { name: name, text: this.state.text, weekId: this.props.currentWeek, read: false })
-    this.setState({ text: '' })
-  }
-
-  render() {
-    const messages = this.props.messages,
-      close = button(this.props.close, x)
-    return (
-    <Drawer width={500} openSecondary={true} open={this.props.drawer} >
-      <AppBar title='Messages' iconElementLeft={close} />
-      <List>
-        {messages.map(message =>
-        <div>
-          <ListItem
-            leftAvatar={<Avatar>{message.name[0]}</Avatar>}
-            secondaryText={message.text}
-            secondaryTextLines={2}
-          />
-          <Divider inset={true} />
-        </div>
-        )}
-      </List>
-      <TextField
-        floatingLabelText='New Message'
-        multiLine={true}
-        rows={2}
-        onChange={this.textChange}
-        value={this.state.text}
-      /><br />
-      <RaisedButton label='Send' primary={true} onTouchTap={this.newMessage} />
-    </Drawer>
-    )
-  }
+const Messages = props => {
+  const messages = props.messages,
+    close = button(props.close, x)
+  return (
+  <Drawer width={500} openSecondary={true} open={props.drawer} >
+    <AppBar title='Messages' iconElementLeft={close} />
+    <List>
+      {messages.map(message =>
+      <div>
+        <ListItem
+          leftAvatar={<Avatar>{message.name[0]}</Avatar>}
+          secondaryText={message.text}
+          secondaryTextLines={2}
+        />
+        <Divider inset={true} />
+      </div>
+      )}
+    </List>
+    <TextField
+      floatingLabelText='New Message'
+      multiLine={true}
+      rows={2}
+      onChange={props.textChange}
+      value={props.text}
+    /><br />
+    <RaisedButton label='Send' primary={true} onTouchTap={props.newMessage} />
+  </Drawer>
+  )
 }
 
-const mapState = ({drawer, messages, currentWeek, coach}) => ({drawer, messages, currentWeek, coach})
-
-export default connect(mapState, {close, sendMessage})(Messages)
+export default Messages

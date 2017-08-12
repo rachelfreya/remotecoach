@@ -47,8 +47,8 @@ class Resources extends Component {
           <ul>
             {resources.map(resource =>
             <li>
-              <a href={resource.url} target="_blank" >{resource.name}</a>
-              {coach && button()}
+              <a href={resource.url} target='_blank' >{resource.name}</a>
+              {coach && this.delete(resource.id)}
             </li>
             )}
           </ul>

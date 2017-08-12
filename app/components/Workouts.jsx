@@ -72,8 +72,7 @@ class Workouts extends Component {
               </TableRowColumn>
               <TableRowColumn>{workout.total}</TableRowColumn>
               <TableRowColumn>
-                {coach && this.delete(workout.id)} >
-                  }
+                {coach && this.delete(workout.id)}
               </TableRowColumn>
             </TableRow>
             )}
