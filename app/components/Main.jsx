@@ -73,9 +73,10 @@ class Main extends Component {
   }
 
   openMessages = weekId => {
+    const user = this.props.coach ? 'barbara' : 'abby'
     this.props.setWeek(weekId)
     this.props.loadMessages(weekId)
-    this.props.markAsRead(weekId)
+    this.props.markAsRead(weekId, user)
     this.setState({ drawer: true })
   }
 

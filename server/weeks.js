@@ -4,6 +4,8 @@ const db = require('APP/db')
 const Week = db.model('weeks')
 const Message = db.model('messages')
 
+const capitalize = word => word[0].toUpperCase() + word.slice(1)
+
 module.exports = require('express').Router()
   .get('/', (req, res, next) =>
       Week.findAll({
@@ -49,11 +51,11 @@ module.exports = require('express').Router()
       }))
       .then(messages => res.json(messages))
       .catch(next))
-  .put('/:id/messages', (req, res, next) =>
-      Message.update(
-        { read: true },
-        { where: { weekId: req.params.id } }
-      )
+  .put('/:id/messages/:user', (req, res, next) =>
+        Message.update(
+          { read: true },
+          { where: { weekId: req.params.id, name: capitalize(req.params.user) } }
+        )
       .catch(next))
   .delete('/:id', (req, res, next) =>
       Week.findById(req.params.id)

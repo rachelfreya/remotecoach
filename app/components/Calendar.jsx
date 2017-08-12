@@ -55,7 +55,7 @@ const Calendar = props => {
       <Table>
         <TableHeader displaySelectAll={false} >
           <TableRow >
-            <TableHeaderColumn colSpan="3">
+            <TableHeaderColumn colSpan='3'>
               {`${month} -- Goal: ${props.findGoal(month) ? props.findGoal(month).goal : ''}`}
               { coach && editGoal(month) }
             </TableHeaderColumn>

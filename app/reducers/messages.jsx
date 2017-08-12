@@ -26,8 +26,8 @@ export const sendMessage = (weekId, message) => dispatch => {
   .catch(err => console.error(err))
 }
 
-export const markAsRead = weekId => dispatch => {
-  axios.put(`/api/weeks/${weekId}/messages`)
+export const markAsRead = (weekId, user) => dispatch => {
+  axios.put(`/api/weeks/${weekId}/messages/${user}`)
   .catch(err => console.error(err))
 }
 
